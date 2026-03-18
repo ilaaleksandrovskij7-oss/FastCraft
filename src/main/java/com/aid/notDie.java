@@ -21,7 +21,7 @@ public class notDie {
                     ServerPlayer splr = (ServerPlayer) plr;
                     plr.setHealth(1);
                     splr.setGameMode(GameType.SPECTATOR);
-                    plr.displayClientMessage(Component.literal("§4 you dead!"), true);
+                    plr.displayClientMessage(Component.literal("§4 you dead!"), false);
                 }
             } else {
                 float hp = plr.getMaxHealth();
