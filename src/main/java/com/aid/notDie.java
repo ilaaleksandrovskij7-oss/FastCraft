@@ -1,66 +1,40 @@
 package com.aid;
 
-import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.network.chat.Component;
-import java.util.HashMap;
-import java.util.UUID;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 
 public class notDie {
-    private static final HashMap<UUID, Boolean> playerVeinMinerStatus = new HashMap<>();
-
-    public static void register() {
-        ServerLivingEntityEvents.ALLOW_DEATH.register((livingEntity, damageSource, damageAmount) -> {
-            return dieC(livingEntity, damageSource, damageAmount);
-        });
-    }
-
-    public static boolean getVeinMinerStatus(UUID playerId) {
-        return playerVeinMinerStatus.getOrDefault(playerId, true);
-    }
-
-    public static void setVeinMinerStatus(UUID playerId, boolean status) {
-        playerVeinMinerStatus.put(playerId, status);
-    }
 
     public static boolean dieC(LivingEntity livingEntity, DamageSource damageSource, float damageAmount) {
-        if (!(livingEntity instanceof Player)) {
-            return true;
-        }
 
-        Player player = (Player) livingEntity;
-        UUID playerId = player.getUUID();
-        boolean isVeinMinerEnabled = getVeinMinerStatus(playerId);
+        if (livingEntity instanceof Player) {
+            Player plr = (Player) livingEntity;
 
-        if (!isVeinMinerEnabled) {
-            return true;
-        }
-
-        float healthAfterDamage = player.getHealth() - damageAmount;
-
-        if (healthAfterDamage <= 0) {
-            player.displayClientMessage(Component.literal("§4❤ Смерть отменена!"), true);
-
-            AttributeInstance maxHealthAttr = player.getAttribute(Attributes.MAX_HEALTH);
-
-            if (maxHealthAttr != null) {
-                double currentMax = maxHealthAttr.getBaseValue();
-                double newMax = Math.max(2.0, currentMax - 2.0);
-                maxHealthAttr.setBaseValue(newMax);
+            if (plr.getMaxHealth() <= 2){
+                if (plr instanceof ServerPlayer){
+                    ServerPlayer splr = (ServerPlayer) plr;
+                    plr.setHealth(1);
+                    splr.setGameMode(GameType.SPECTATOR);
+                    plr.displayClientMessage(Component.literal("§4 you dead!"), true);
+                }
+            } else {
+                float hp = plr.getMaxHealth();
+                AttributeInstance Mhp = plr.getAttribute(Attributes.MAX_HEALTH);
+                Mhp.setBaseValue(hp - 2);
+                plr.setHealth(hp - 2);
             }
 
-            player.setHealth(player.getMaxHealth());
-
-            int heartsLeft = (int)(player.getMaxHealth() / 2);
-            player.displayClientMessage(Component.literal("§cОсталось сердечек: " + heartsLeft), true);
-
             return false;
-        }
 
+        }
         return true;
     }
+
+
 }
