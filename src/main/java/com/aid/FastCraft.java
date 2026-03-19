@@ -38,6 +38,8 @@ public class FastCraft implements ModInitializer {
             return InteractionResult.PASS;
         });
 
+        levitate.register();
+
         DiamondHearts.register();
 
 		System.out.println("mod was started");
