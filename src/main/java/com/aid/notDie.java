@@ -27,7 +27,8 @@ public class notDie {
                 float hp = plr.getMaxHealth();
                 AttributeInstance Mhp = plr.getAttribute(Attributes.MAX_HEALTH);
                 Mhp.setBaseValue(hp - 2);
-                plr.setHealth(hp - 2);
+                //plr.setHealth(hp - 2);
+                plr.setHealth(2);
             }
 
             return false;
