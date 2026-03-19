@@ -38,13 +38,7 @@ public class FastCraft implements ModInitializer {
             return InteractionResult.PASS;
         });
 
-        ServerTickEvents.END_SERVER_TICK.register(server -> {
-            for (ServerPlayer player : server.getPlayerList().getPlayers()) {
-                DiamondHearts.checkForBurning(player);
-            }
-        });
-
-        System.out.println("Heart Eater mechanic loaded!");
+        DiamondHearts.register();
 
 		System.out.println("mod was started");
 	}
